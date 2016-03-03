@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import com.jhb.dvt.dvt_store.Adapters.BasketRecyclerViewAdapter;
 import com.jhb.dvt.dvt_store.Models.Item;
 import com.jhb.dvt.dvt_store.R;
-import com.jhb.dvt.dvt_store.Utils.BasketViewLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +39,6 @@ public class BasketFragment extends Fragment {
             e.printStackTrace();
         }
         recyclerView.setAdapter(basketRecyclerViewAdapter);
-        new BasketViewLoader(basketRecyclerViewAdapter, container.getContext(), itemList, "GetAllProducts").execute();
 
         return recyclerView;
     }

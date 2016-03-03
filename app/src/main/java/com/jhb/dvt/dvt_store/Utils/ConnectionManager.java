@@ -1,6 +1,8 @@
 package com.jhb.dvt.dvt_store.Utils;
 
+import com.jhb.dvt.dvt_store.Constants.Constants;
 import com.jhb.dvt.dvt_store.Models.Item;
+import com.jhb.dvt.dvt_store.Models.Location;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -12,20 +14,29 @@ import java.util.List;
  */
 public class ConnectionManager {
 
-    public String JSonCall(HttpURLConnection conn, List<Item> items) throws IOException {
-        new JsonRead().readJsonStream(items, conn.getInputStream());
+    private String checkSize(List items)
+    {
         if (items.size() > 0)
             return "Success";
         else return "Fail";
     }
 
+    public String JSonCall(HttpURLConnection conn, List<Item> items) throws IOException {
+        new JsonRead().readJsonStream(items, conn.getInputStream());
+        return checkSize(items);
+    }
+
+    public String JSonCallLoc(HttpURLConnection conn, List<Location> items) throws IOException {
+        new JsonRead().readMapStream(items, conn.getInputStream());
+        return checkSize(items);
+    }
+
     public HttpURLConnection HttpConnection(String Url) throws IOException {
         URL url = new URL(Url);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setConnectTimeout(8000);
-        conn.setReadTimeout(1000);
+        conn.setConnectTimeout(Constants.CONNECTION_TIMEOUT);
+        conn.setReadTimeout(Constants.READ_TIMEOUT);
         conn.setRequestMethod("GET");
-        conn.setDoInput(true);
         conn.connect();
         conn.getResponseCode();
         return conn ;

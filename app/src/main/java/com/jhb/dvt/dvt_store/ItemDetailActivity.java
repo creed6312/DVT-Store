@@ -1,12 +1,13 @@
 package com.jhb.dvt.dvt_store;
 
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,14 +23,15 @@ import com.jhb.dvt.dvt_store.Utils.Utilities;
 
 public class ItemDetailActivity extends AppCompatActivity {
 
-    TextView itemDetailQuantity;
-    ImageView itemDetailImage;
-    TextView itemDetailName;
-    TextView itemDetailDetails;
-    TextView itemDetailPrice;
-    FloatingActionButton floatingActionBuy, floatActionMinus, floatActionPlus;
+    private TextView itemDetailQuantity;
+    private ImageView itemDetailImage;
+    private TextView itemDetailName;
+    private TextView itemDetailDetails;
+    private TextView itemDetailPrice;
+    private FloatingActionButton floatingActionBuy, floatActionMinus, floatActionPlus;
+    private Menu menu ;
 
-    public void itemInstantiation() {
+    private void itemInstantiation() {
         itemDetailImage = (ImageView) findViewById(R.id.idItemDetailImage);
         itemDetailName = (TextView) findViewById(R.id.idItemDetailName);
         itemDetailDetails = (TextView) findViewById(R.id.idItemDetailDetails);
@@ -72,14 +74,26 @@ public class ItemDetailActivity extends AppCompatActivity {
         floatActionDecrease();
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
+
+        if (item.getItemId() == R.id.action_search) {
+            return true;
+        }
+        else if (item.getItemId() == R.id.action_cart)
+        {
+            startActivity(new Intent(getApplicationContext(),BasketActivity.class));
+        }
+        else if (item.getItemId() == R.id.action_blank)
+        {
+
+        }
+        else
+            finish();
         return super.onOptionsItemSelected(item);
     }
 
-    public void checkQuantity() {
+    private void checkQuantity() {
         String id = getIntent().getStringExtra("itemID");
 
         for (int i = 0; i < Utilities.basketItems.size(); i++) {
@@ -92,6 +106,16 @@ public class ItemDetailActivity extends AppCompatActivity {
         hideQuantity();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        this.menu = menu;
+        Utilities.CheckCart(menu);
+        menu.findItem(R.id.action_search).setVisible(false);
+        menu.findItem(R.id.action_blank).setVisible(true);
+        return true;
+    }
+
     private void hideQuantity() {
         floatingActionBuy.setVisibility(View.VISIBLE);
         floatActionMinus.setVisibility(View.INVISIBLE);
@@ -99,14 +123,14 @@ public class ItemDetailActivity extends AppCompatActivity {
         itemDetailQuantity.setVisibility(View.INVISIBLE);
     }
 
-    void showQuantity() {
+    private void showQuantity() {
         floatingActionBuy.setVisibility(View.INVISIBLE);
         itemDetailQuantity.setVisibility(View.VISIBLE);
         floatActionMinus.setVisibility(View.VISIBLE);
         floatActionPlus.setVisibility(View.VISIBLE);
     }
 
-    public void floatActionIncrease() {
+    private void floatActionIncrease() {
         floatActionPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,8 +148,14 @@ public class ItemDetailActivity extends AppCompatActivity {
         });
     }
 
-    public void floatActionDecrease() {
+    @Override
+    protected void onResume() {
+        Utilities.CheckCart(menu);
+        checkQuantity();
+        super.onResume();
+    }
 
+    private void floatActionDecrease() {
         floatActionMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,6 +167,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                             Snackbar.make(view, "Removed from Cart!", Snackbar.LENGTH_SHORT)
                                     .setAction("Action", null).show();
                             Utilities.basketItems.remove(i);
+                            Utilities.CheckCart(menu);
                             hideQuantity();
                         }
                         Utilities.saveBasket(getApplicationContext());
@@ -147,7 +178,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         });
     }
 
-    public void floatingActionBuy() {
+    private void floatingActionBuy() {
         floatingActionBuy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,6 +188,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                 Utilities.saveBasket(getApplicationContext());
                 itemDetailQuantity.setText("1");
                 showQuantity();
+                Utilities.CheckCart(menu);
             }
         });
     }
