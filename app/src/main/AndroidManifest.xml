@@ -23,6 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:screenOrientation="portrait" android:name=".ItemDetailActivity"/>
+        <activity android:screenOrientation="portrait" android:name=".BasketActivity"/>
+
 
     </application>
 

@@ -1,5 +1,6 @@
 package com.jhb.dvt.dvt_store;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -122,6 +123,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.action_search) {
             doSearch();
             return true;
+        }
+
+        else if (id == R.id.action_basket){
+
+            Intent intent = new Intent(this, BasketActivity.class);
+            startActivity(intent);
+
+            return  true;
+
         }
         return super.onOptionsItemSelected(item);
     }
